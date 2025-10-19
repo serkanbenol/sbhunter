@@ -1,6 +1,3 @@
-Harika 👏
-O zaman `README.md` içeriğini GitHub sayfana ([https://github.com/serkanbenol/sbhunter](https://github.com/serkanbenol/sbhunter)) uygun biçimde sadeleştirilmiş, modern, okunaklı bir Markdown formatına çevirdim.
-İşte doğrudan **kopyala-yapıştır** yapabileceğin sürüm:
 
 ---
 
