@@ -18,7 +18,7 @@ Pasif OSINT + aktif brute-force + wildcard tespiti + canlılık doğrulaması (h
 - ⚙️ **Fallback mekanizması:** `puredns`/`dnsx` yoksa gömülü `dig` döngüsü  
 - 🎨 **Kullanıcı dostu arayüz:** `--pretty` ile renkli, bölümlenmiş çıktı  
 - 🧱 **Eksik araç yoksa bile durmaz:** Eksikler raporlanır, akış devam eder  
-
+````
 ---
 
 ## 📦 Kurulum
