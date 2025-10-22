@@ -1,19 +1,28 @@
-🕵️ SBHunter — Smart Subdomain Hunter
+# 🕵️ SBHunter — Smart Subdomain Hunter
 
-A modern, fast, and user-friendly subdomain discovery tool.
-Passive OSINT + active brute-force + wildcard detection + liveness verification (httpx) — all in one command.
+> Modern, fast and user-friendly subdomain discovery tool.
+> Passive OSINT + active brute-force + wildcard detection + liveness verification (httpx) — all in one command.
 
-🚀 Features
-🔍 Amass (passive) runs automatically
-🧩 All tool outputs are merged: subdomains/*.txt → unique → final.txt
-🌐 Liveness verification: final.txt → httpx → final_alive.txt
-🧠 Wildcard filter: automatically removes false positives
-⚙️ Fallback mechanism: embedded dig loop if puredns/dnsx are missing
-🎨 User-friendly interface: --pretty for colored, sectioned output
-🧱 Continues even if some tools are missing: missing tools are reported and the pipeline proceeds
-🧰 Number of supported tools: 11 — assetfinder, subfinder, sublist3r, chaos, findomain, amass, dnsx, puredns, httpx, ffuf, gobuster
+---
 
-📦 Installation
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](#license) [![Status](https://img.shields.io/badge/status-beta-yellowgreen.svg)](#)
+
+> **Quick note:** Use this tool only for authorized tests and learning. Unauthorized scanning is illegal — you alone are responsible for how you use SBHunter.
+
+## 🚀 Features
+
+* 🔍 Automatic passive Amass collection
+* 🧩 Merge outputs from all tools → `subdomains/*.txt` → unique → `final.txt`
+* 🌐 Liveness check: `final.txt` → `httpx` → `final_alive.txt`
+* 🧠 Wildcard detection & filtering to remove false positives
+* ⚙️ Built-in fallback dig loop if `puredns`/`dnsx` are missing
+* 🎨 `--pretty` for colored, sectioned, human-friendly output
+* 🧱 Pipeline continues even if some tools are absent (they are reported)
+* 🧰 Supported tools (count: 11): `assetfinder`, `subfinder`, `sublist3r`, `chaos`, `findomain`, `amass`, `dnsx`, `puredns`, `httpx`, `ffuf`, `gobuster`
+
+---
+
+## 📦 Installation
 
 ```bash
 git clone https://github.com/serkanbenol/sbhunter.git
@@ -21,9 +30,13 @@ cd sbhunter
 chmod +x sbhunter.py
 ```
 
-Requirements (optional but recommended): amass, subfinder, assetfinder, findomain, chaos, dnsx, puredns, httpx, ffuf, gobuster
+**Recommended (optional)**: install any of the following to get the full experience:
+`amass`, `subfinder`, `assetfinder`, `findomain`, `chaos`, `dnsx`, `puredns`, `httpx`, `ffuf`, `gobuster`.
 
-⚡️ Usage
+---
+
+## ⚡️ Usage
+
 Single domain:
 
 ```bash
@@ -36,73 +49,84 @@ Domain list (one domain per line):
 ./sbhunter.py --auto -f targets.txt --pretty
 ```
 
-Including brute-force:
+Include brute-force:
 
 ```bash
 ./sbhunter.py -d example.com --auto --bruteforce --pretty
 ```
 
-Amass active scan (optional, may take long):
+Amass active scan (optional — can be slow):
 
 ```bash
 ./sbhunter.py -d example.com --auto --amass-active --pretty
 ```
 
-Custom resolver (for fallback dig):
+Use a custom resolver for fallback dig:
 
 ```bash
 ./sbhunter.py -d example.com --auto --resolver 8.8.8.8 --pretty
 ```
 
-🔄 Workflow Stages
-Subdomain Enumeration
+---
 
-assetfinder, sublist3r, subfinder, chaos, findomain, amass (passive)
-(Optional) puredns, dnsx, or fallback dig loop
-Overlay Prefix → generate new candidates using prefixes like vpn, sso, admin
+## 🔄 Workflow (what it does)
 
-Validation & Wildcard Filtering
+1. **Subdomain Enumeration**
+   Runs `assetfinder`, `sublist3r`, `subfinder`, `chaos`, `findomain`, `amass` (passive). Optionally `puredns`/`dnsx` or dig fallback.
+2. **Overlay Prefix**
+   Generates candidates using prefixes (e.g. `vpn.`, `sso.`, `admin.`).
+3. **Validation & Wildcard Filtering**
+   Removes wildcard/false positives and validates DNS responses.
+4. **VHOST & Dir Brute** *(optional)*
+   Use `ffuf` or `gobuster` for virtual host / directory fuzzing.
+5. **Merge Unique** → `final.txt`
+6. **HTTPX Alive Scan** → `final_alive.txt`
+7. **Summary**
+   Nicely formatted colored output with final candidates and alive hosts.
 
-VHOST & Dir Brute (optional, ffuf or gobuster)
+---
 
-Unique Merge → final.txt
+## 📁 Output structure
 
-HTTPX Alive Scan → final_alive.txt
+Example: `example.com_YYYY-MM/`
 
-Result Summary: colored, clean, readable output
-
-📁 Output Structure
-`example.com_2025-10/`
-├─ `subdomains/`
-│  ├─ `assetfinder.txt`
-│  ├─ `chaos.txt`
-│  ├─ `amass_passive.txt`
+```
+example.com_2025-10/
+├─ subdomains/
+│  ├─ assetfinder.txt
+│  ├─ chaos.txt
+│  ├─ amass_passive.txt
 │  ├─ ...
-├─ `raw_outputs/`
-│  ├─ `amass_passive.txt`
-│  ├─ `bruteforce_puredns.txt`
+├─ raw_outputs/
+│  ├─ amass_passive.txt
+│  ├─ bruteforce_puredns.txt
 │  └─ ...
-├─ `validated.txt`
-├─ `validated_filtered.txt`
-├─ `wildcard_info.txt`
-├─ `final.txt`
-└─ `final_alive.txt`
+├─ validated.txt
+├─ validated_filtered.txt
+├─ wildcard_info.txt
+├─ final.txt
+└─ final_alive.txt
+```
 
-💡 Parameters
+---
+
+## 💡 Parameters
 
 | Parameter                | Description                           |
 | ------------------------ | ------------------------------------- |
 | `-d` / `--domain`        | Single domain                         |
-| `-f` / `--file`          | Domain list                           |
+| `-f` / `--file`          | Domain list (one per line)            |
 | `--auto`                 | Run the entire pipeline automatically |
 | `--bruteforce`           | Add DNS brute-force                   |
-| `--amass-active`         | Amass active mode                     |
+| `--amass-active`         | Enable Amass active mode              |
 | `-w` / `--wordlist`      | Path to DNS wordlist                  |
 | `-aw` / `--alt-wordlist` | VHOST/dir/overlay wordlist            |
 | `--resolver`             | Resolver for dig fallback             |
 | `--pretty`               | Colored, titled output                |
 
-🎯 Example Output
+---
+
+## 🎯 Example output (shortened)
 
 ```
 ============================================================
@@ -125,5 +149,30 @@ sso.tesla.com
 ============================================================
 ```
 
-⚠️ Legal Notice
-This tool must only be used for authorized penetration tests and educational purposes. Unauthorized scanning is illegal and all responsibility lies with the user.
+---
+
+## ⚠️ Legal & Responsible Use
+
+SBHunter is a security tool — use it responsibly. Only run scans against systems you own or where you have explicit permission. Unauthorized scanning may be illegal and could have serious consequences. You are responsible for your actions.
+
+---
+
+## Contributing
+
+Pull requests, issues and feature requests are welcome. If you add integrations or change defaults, please include tests or clear usage examples.
+
+---
+
+## License
+
+MIT © Serkan Benol — see [LICENSE](./LICENSE) for details.
+
+---
+
+## Contact / Help
+
+If you run into problems or want improvements, open an issue on the repo or ping the maintainer. Need help with setup or tuning for large targets? Tell me what you tried and paste relevant logs — I’ll help you refine it. 👊
+
+---
+
+
