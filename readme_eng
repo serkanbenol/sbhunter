@@ -1,0 +1,129 @@
+🕵️ SBHunter — Smart Subdomain Hunter
+
+A modern, fast, and user-friendly subdomain discovery tool.
+Passive OSINT + active brute-force + wildcard detection + liveness verification (httpx) — all in one command.
+
+🚀 Features
+🔍 Amass (passive) runs automatically
+🧩 All tool outputs are merged: subdomains/*.txt → unique → final.txt
+🌐 Liveness verification: final.txt → httpx → final_alive.txt
+🧠 Wildcard filter: automatically removes false positives
+⚙️ Fallback mechanism: embedded dig loop if puredns/dnsx are missing
+🎨 User-friendly interface: --pretty for colored, sectioned output
+🧱 Continues even if some tools are missing: missing tools are reported and the pipeline proceeds
+🧰 Number of supported tools: 11 — assetfinder, subfinder, sublist3r, chaos, findomain, amass, dnsx, puredns, httpx, ffuf, gobuster
+
+📦 Installation
+
+```bash
+git clone https://github.com/serkanbenol/sbhunter.git
+cd sbhunter
+chmod +x sbhunter.py
+```
+
+Requirements (optional but recommended): amass, subfinder, assetfinder, findomain, chaos, dnsx, puredns, httpx, ffuf, gobuster
+
+⚡️ Usage
+Single domain:
+
+```bash
+./sbhunter.py -d example.com --auto --pretty
+```
+
+Domain list (one domain per line):
+
+```bash
+./sbhunter.py --auto -f targets.txt --pretty
+```
+
+Including brute-force:
+
+```bash
+./sbhunter.py -d example.com --auto --bruteforce --pretty
+```
+
+Amass active scan (optional, may take long):
+
+```bash
+./sbhunter.py -d example.com --auto --amass-active --pretty
+```
+
+Custom resolver (for fallback dig):
+
+```bash
+./sbhunter.py -d example.com --auto --resolver 8.8.8.8 --pretty
+```
+
+🔄 Workflow Stages
+Subdomain Enumeration
+
+assetfinder, sublist3r, subfinder, chaos, findomain, amass (passive)
+(Optional) puredns, dnsx, or fallback dig loop
+Overlay Prefix → generate new candidates using prefixes like vpn, sso, admin
+
+Validation & Wildcard Filtering
+
+VHOST & Dir Brute (optional, ffuf or gobuster)
+
+Unique Merge → final.txt
+
+HTTPX Alive Scan → final_alive.txt
+
+Result Summary: colored, clean, readable output
+
+📁 Output Structure
+`example.com_2025-10/`
+├─ `subdomains/`
+│  ├─ `assetfinder.txt`
+│  ├─ `chaos.txt`
+│  ├─ `amass_passive.txt`
+│  ├─ ...
+├─ `raw_outputs/`
+│  ├─ `amass_passive.txt`
+│  ├─ `bruteforce_puredns.txt`
+│  └─ ...
+├─ `validated.txt`
+├─ `validated_filtered.txt`
+├─ `wildcard_info.txt`
+├─ `final.txt`
+└─ `final_alive.txt`
+
+💡 Parameters
+
+| Parameter                | Description                           |
+| ------------------------ | ------------------------------------- |
+| `-d` / `--domain`        | Single domain                         |
+| `-f` / `--file`          | Domain list                           |
+| `--auto`                 | Run the entire pipeline automatically |
+| `--bruteforce`           | Add DNS brute-force                   |
+| `--amass-active`         | Amass active mode                     |
+| `-w` / `--wordlist`      | Path to DNS wordlist                  |
+| `-aw` / `--alt-wordlist` | VHOST/dir/overlay wordlist            |
+| `--resolver`             | Resolver for dig fallback             |
+| `--pretty`               | Colored, titled output                |
+
+🎯 Example Output
+
+```
+============================================================
+Chaos
+------------------------------------------------------------
+api.tesla.com
+dev.tesla.com
+www.tesla.com
+
+============================================================
+Amass_passive
+------------------------------------------------------------
+mail.tesla.com
+sso.tesla.com
+...
+
+============================================================
+[FINAL CANDIDATES] (24)
+[FINAL ALIVE] (17)
+============================================================
+```
+
+⚠️ Legal Notice
+This tool must only be used for authorized penetration tests and educational purposes. Unauthorized scanning is illegal and all responsibility lies with the user.
