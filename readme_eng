@@ -3,18 +3,18 @@
 > Modern, fast and user-friendly subdomain discovery tool.
 > Passive OSINT + active brute-force + wildcard detection + liveness verification (httpx) — all in one command.
 
----
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](#license) [![Status](https://img.shields.io/badge/status-beta-yellowgreen.svg)](#)
 
-> **Quick note:** Use this tool only for authorized tests and learning. Unauthorized scanning is illegal — you alone are responsible for how you use SBHunter.
+**Quick note:** Use this tool only for authorized tests and learning. Unauthorized scanning is illegal — you alone are responsible for how you use SBHunter.
+
+---
 
 ## 🚀 Features
 
 * 🔍 Automatic passive Amass collection
 * 🧩 Merge outputs from all tools → `subdomains/*.txt` → unique → `final.txt`
 * 🌐 Liveness check: `final.txt` → `httpx` → `final_alive.txt`
-* 🧠 Wildcard detection & filtering to remove false positives
+* 🧠 Wildcard detection & filtering (removes false positives)
 * ⚙️ Built-in fallback dig loop if `puredns`/`dnsx` are missing
 * 🎨 `--pretty` for colored, sectioned, human-friendly output
 * 🧱 Pipeline continues even if some tools are absent (they are reported)
@@ -30,7 +30,7 @@ cd sbhunter
 chmod +x sbhunter.py
 ```
 
-**Recommended (optional)**: install any of the following to get the full experience:
+**Recommended (optional):** install any of the following to unlock full functionality:
 `amass`, `subfinder`, `assetfinder`, `findomain`, `chaos`, `dnsx`, `puredns`, `httpx`, `ffuf`, `gobuster`.
 
 ---
@@ -61,7 +61,7 @@ Amass active scan (optional — can be slow):
 ./sbhunter.py -d example.com --auto --amass-active --pretty
 ```
 
-Use a custom resolver for fallback dig:
+Custom resolver for fallback dig:
 
 ```bash
 ./sbhunter.py -d example.com --auto --resolver 8.8.8.8 --pretty
@@ -71,18 +71,13 @@ Use a custom resolver for fallback dig:
 
 ## 🔄 Workflow (what it does)
 
-1. **Subdomain Enumeration**
-   Runs `assetfinder`, `sublist3r`, `subfinder`, `chaos`, `findomain`, `amass` (passive). Optionally `puredns`/`dnsx` or dig fallback.
-2. **Overlay Prefix**
-   Generates candidates using prefixes (e.g. `vpn.`, `sso.`, `admin.`).
-3. **Validation & Wildcard Filtering**
-   Removes wildcard/false positives and validates DNS responses.
-4. **VHOST & Dir Brute** *(optional)*
-   Use `ffuf` or `gobuster` for virtual host / directory fuzzing.
+1. **Subdomain Enumeration** — runs `assetfinder`, `sublist3r`, `subfinder`, `chaos`, `findomain`, `amass` (passive). Optionally `puredns`/`dnsx` or dig fallback.
+2. **Overlay Prefix** — generate candidates from prefixes (e.g. `vpn.`, `sso.`, `admin.`).
+3. **Validation & Wildcard Filtering** — remove wildcard/false positives and validate DNS responses.
+4. **VHOST & Dir Brute** *(optional)* — `ffuf` / `gobuster` for virtual host / directory fuzzing.
 5. **Merge Unique** → `final.txt`
 6. **HTTPX Alive Scan** → `final_alive.txt`
-7. **Summary**
-   Nicely formatted colored output with final candidates and alive hosts.
+7. **Summary** — colored, human-readable output with final candidates and alive hosts.
 
 ---
 
@@ -126,7 +121,7 @@ example.com_2025-10/
 
 ---
 
-## 🎯 Example output (shortened)
+## 🎯 Example output (short)
 
 ```
 ============================================================
@@ -159,20 +154,19 @@ SBHunter is a security tool — use it responsibly. Only run scans against syste
 
 ## Contributing
 
-Pull requests, issues and feature requests are welcome. If you add integrations or change defaults, please include tests or clear usage examples.
+Pull requests, issues and feature requests are welcome. If you add integrations or change defaults, include clear usage examples and, if possible, tests.
 
 ---
 
 ## License
 
-MIT © Serkan Benol — see [LICENSE](./LICENSE) for details.
+MIT © Serkan Benol — see `LICENSE` for details.
 
 ---
 
 ## Contact / Help
 
-If you run into problems or want improvements, open an issue on the repo or ping the maintainer. Need help with setup or tuning for large targets? Tell me what you tried and paste relevant logs — I’ll help you refine it. 👊
+Open an issue on the repo or contact the maintainer if you need setup help or tuning advice. Paste relevant logs and command lines — I’ll help you refine it. 👊
 
 ---
-
 
